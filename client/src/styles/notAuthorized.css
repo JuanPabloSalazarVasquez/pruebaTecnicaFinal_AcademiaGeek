@@ -1,0 +1,17 @@
+.notAuthorized .header {
+    margin-bottom: 2vw;
+}
+
+.notAuthorized  .container{
+    background-color: rgb(210, 210, 210);
+    border-radius: 5px;
+}
+
+.notAuthorized  .container .warning{
+    height: 7vw;
+    margin: 0;
+}
+
+.notAuthorized .links{
+    text-align: center;
+}

@@ -1,0 +1,25 @@
+.header, .headerHomePage{
+    box-shadow: 1px 1px 8px 1px #000000;
+    text-align: right;
+}
+
+.header, .headerHomePage .titulo{
+    margin: auto;
+    text-align: right;
+    width: 50%;
+    font-size:xx-large;
+}
+
+.headerHomePage .titulo{
+    margin: auto;
+    text-align: center;
+    width: 50%;
+    font-size:xx-large;
+}
+
+.header, .headerHomePage img{
+    height: 5.5vw;
+    padding: 0px;
+    margin-left: 14%;
+
+}

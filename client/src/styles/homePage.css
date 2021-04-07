@@ -1,0 +1,21 @@
+.homePage .header {
+    margin-bottom: 2vw;
+}
+
+.homePage  .container{
+    background-color: rgb(210, 210, 210);
+    border-radius: 5px;
+}
+
+.homePage  .container .warning{
+    height: 7vw;
+    margin: 0;
+}
+
+.homePage .links{
+    text-align: center;
+}
+
+.homePage .botones{
+    text-align: center;
+}
