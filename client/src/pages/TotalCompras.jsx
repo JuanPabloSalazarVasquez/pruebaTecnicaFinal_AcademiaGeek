@@ -2,17 +2,17 @@ import React from 'react';
 
 import Header from '../components/base/header';
 import Footer from '../components/base/footer';
-import RealizarCompra from '../components/realizarCompra';
+import TotalCompras from '../components/totalCompras';
 
 
-const realizarCompra = () => {
+const totalCompras = () => {
     return (
         <div>
             <Header />
-            <RealizarCompra />
+            <TotalCompras />
             <Footer />
         </div>
     )
 }
 
-export default realizarCompra;
+export default totalCompras;

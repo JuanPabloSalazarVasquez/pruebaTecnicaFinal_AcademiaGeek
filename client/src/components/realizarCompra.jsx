@@ -28,8 +28,9 @@ const RealizarCompra = () => {
         if (mm < 10) mm = "0" + mm;
 
         //hora
-        let HH = '' + (date.getHours() - 5);
+        let HH = '' + (date.getHours());
         let MM = '' + date.getMinutes();
+        console.log(HH + ":" + MM)
         if (HH < 10) HH = "0" + HH;
         if (MM < 10) MM = "0" + MM;
 
@@ -40,11 +41,6 @@ const RealizarCompra = () => {
             hora: HH + ":" + MM,
         }));
     }
-
-    const tableBody = <tr>
-        <td>Tipo de producto</td>
-        <td>Cantidad del producto</td>
-    </tr>;
 
     const handleChange = (e) => {
         let name = e.target.name;
@@ -57,7 +53,7 @@ const RealizarCompra = () => {
         } else {
             products.push(``) //Aquí quiero emplear arrays para los productos, tal cual pidieron
         }
-        
+
     }
 
     const add = () => {
@@ -96,6 +92,42 @@ const RealizarCompra = () => {
             })
         }
     }
+
+    const deleteItem = () => {
+        swal.fire({
+            icon: "success",
+            title: "Producto eliminado",
+            confirmButtonText: "Entendido",
+            confirmButtonColor: "green",
+        }); //Quita el elemento en cuestión del array y vuelve tirar el map
+    }
+
+    const finishOrder = () => {
+        swal.fire({
+            icon: "success",
+            title: "¡Listo!",
+            text: "La orden ha sido creada",
+            confirmButtonText: "Volver al inicio",
+            confirmButtonColor: "green",
+        })
+        .then(() => {
+            window.location.href = '/'
+        });
+        
+    }
+
+    const tableBody = <tr>
+        <td>Tipo de producto</td>
+        <td>Cantidad del producto</td>
+        <td>Subtotal del producto</td>
+        <td style={{ textAlign: "center" }}><input type="image" src="https://cdn.pixabay.com/photo/2012/04/12/20/12/x-30465_1280.png" width="20" height="20" alt="X" onClick={deleteItem} /> </td>
+    </tr>; /*
+    basketList.map((data) =>
+        <tr>
+            <td>{data.typeBaskets}</td>
+            <td>{data.quantity}</td>
+        </tr>
+    */
 
     return (
         <div className="realizarCompra" >
@@ -155,31 +187,46 @@ const RealizarCompra = () => {
                     </Button>
                 </Form>
 
-                <div className="card my-4" style={{ display: "none" }} ref={recibo}>
-                    <div className="card-body">
-                        <h5 className="card-title mb-2">Recibo de compra</h5>
-                        <h5 className="card-title mb-2">GEEK Cosmetics</h5>
-                        <hr />
-                        <p className="card-text">Orden número: {orderData.numeroOrden || ''}</p>
-                        <p className="card-text">Cliente: {orderData.nombre || ''}</p>
-                        <p className="card-text">Fecha y hora: {fechaHora.fecha || ''} - {fechaHora.hora || ''}</p>
+                <div style={{ display: "none" }} ref={recibo}>
 
-                        <table className="table table-bordered table-striped table-sm table-hover .table-responsive">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Producto</th>
-                                    <th scope="col">Cantidad</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {tableBody}
-                            </tbody>
-                        </table>
+
+                    <div className="card my-4">
+                        <div className="card-body">
+                            <h5 className="card-title mb-2">Recibo de compra</h5>
+                            <h5 className="card-title mb-2">GEEK Cosmetics</h5>
+                            <hr />
+                            <p className="card-text">Orden número: {orderData.numeroOrden || ''}</p>
+                            <p className="card-text">Cliente: {orderData.nombre || ''}</p>
+                            <p className="card-text">Fecha y hora: {fechaHora.fecha || ''} - {fechaHora.hora || ''}</p>
+
+                            <table className="table table-bordered table-striped table-sm table-hover .table-responsive">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Producto</th>
+                                        <th scope="col">Cantidad</th>
+                                        <th scope="col">Subtotal</th>
+                                        <th scope="col">Borrar Item</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {tableBody}
+
+                                    <tr>
+                                        <td>Subtotal: </td>
+                                        <td>Total IVA: </td>
+                                        <td>Total: </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div className="card-footer text-left">
+                            <p className="total">Subtotal: {subTotalNumber || ''}</p>
+                            <hr />
+                        </div>
                     </div>
-                    <div className="card-footer text-left">
-                        <p className="total">Subtotal: {subTotalNumber || ''}</p>
-                        <hr/>
-                    </div>
+                    <Button variant="primary" onClick={finishOrder} className="mx-2 my-1">
+                        Finalizar
+                    </Button>
                 </div>
             </Container>
         </div>

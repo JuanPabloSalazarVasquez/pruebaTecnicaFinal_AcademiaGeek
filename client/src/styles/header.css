@@ -3,23 +3,19 @@
     text-align: right;
 }
 
-.header, .headerHomePage .titulo{
+.header .titulo, .headerHomePage .titulo{
     margin: auto;
-    text-align: right;
+    text-align: left;
     width: 50%;
     font-size:xx-large;
 }
 
 .headerHomePage .titulo{
-    margin: auto;
     text-align: center;
-    width: 50%;
-    font-size:xx-large;
 }
 
-.header, .headerHomePage img{
+.header img, .headerHomePage img{
     height: 5.5vw;
     padding: 0px;
     margin-left: 14%;
-
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from "react-bootstrap";
 
 import '../../styles/header.css';
 
@@ -46,7 +47,9 @@ class Header extends React.Component {
                                         <a className="nav-link active" aria-current="page" href="#"></a>
                                     </li>
                                 </ul>
-                                <a href="/"><button className="btn btn-outline-success" type="submit" href="/">Cerrar sesión</button></a>
+                                <a href="/"><button className="btn btn-primary mx-2">Inicio</button></a>
+                                <a href="/realizarCompra"><button className="btn btn-primary mx-2">Realizar Compra</button></a>
+                                <a href="/totalCompras"><button className="btn btn-primary mx-2">Total Compras</button></a>
                             </div>
                         </div>
                     </nav>

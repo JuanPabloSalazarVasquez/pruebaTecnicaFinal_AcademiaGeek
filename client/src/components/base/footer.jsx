@@ -8,7 +8,7 @@ const Footer = () => {
         <div className="footer">
             <hr />
             <p>
-                Todos los derechos reservados ©Nombre de la app
+                Todos los derechos reservados ©GEEK Cosmetics
                 <br />
                 V 1.0.0
             </p>
