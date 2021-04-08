@@ -11,7 +11,7 @@ const HomePage = () => {
                 <h2 className="mx-auto mb-4 mt-5">¡Bienvenid@! <br /> ¿Elija la pestaña a la que quiera acceder?</h2>
                 <div className="botones">
                     <a href="/realizarCompra"><button type="button" className="btn btn-primary mx-3">Realizar compra</button></a>
-                    <button type="button" className="btn btn-primary mx-3">Total compras</button>
+                    <a href="/totalCompras"><button type="button" className="btn btn-primary mx-3">Total compras</button></a>
                 </div>
             </Container>
             {/*

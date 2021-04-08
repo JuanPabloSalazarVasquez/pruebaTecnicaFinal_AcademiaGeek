@@ -1,3 +1,24 @@
 .totalCompras .header {
     margin-bottom: 2vw;
 }
+
+.totalCompras .historial {
+    padding: 20px;
+    border: 3.5px solid rgba(128, 128, 128, 0.4);
+    border-radius: 10px;
+}
+
+.totalCompras  .card {
+    position: relative;
+    margin: 0.5rem 0 1rem 0;
+    background-color: #fff;
+    transition: -webkit-box-shadow 0.25s;
+    transition: box-shadow 0.25s;
+    transition: box-shadow 0.25s, -webkit-box-shadow 0.25s;
+    border-radius: 10px;
+    width: 250px;
+}
+
+.card:hover{
+    box-shadow: 0 10px 20px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06);
+}
