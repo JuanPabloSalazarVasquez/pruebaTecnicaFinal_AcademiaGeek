@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { getFromLocal, remove } from '../../functions/localStorage'
+import { getFromLocal, remove } from '../../functions/functions'
 
 import '../../styles/header.css';
 
@@ -35,7 +35,7 @@ class HeaderHomePage extends React.Component {
                     <nav className="navbar navbar-expand-lg navbar-light bg-light">
                         <div className="container-fluid">
                             <a className="navbar-brand" href="#"><img src="./img/Logo_2.png" alt="" /></a>
-                            <p className="titulo">Titulo</p>
+                            <p className="titulo">GEEK Cosmetics</p>
                             <button className="navbar-toggler" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                                 aria-label="Toggle navigation" >

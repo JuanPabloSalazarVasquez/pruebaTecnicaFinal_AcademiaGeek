@@ -2,8 +2,9 @@ import React from 'react';
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 //Páginas
-import HomePage from './pages/HomePage';
 import NotAuthorized from './pages/NotAuthorized';
+import HomePage from './pages/HomePage';
+import RealizarCompra from './pages/RealizarCompra';
 //Páginas fin
 
 function App() {
@@ -12,8 +13,9 @@ function App() {
         <div className="App">
             <BrowserRouter>
                 <Switch>
-                    <Route exact path="/" component={HomePage} />
                     <Route exact path="/notAuthorized" component={NotAuthorized} />
+                    <Route exact path="/" component={HomePage} />
+                    <Route exact path="/realizarCompra" component={RealizarCompra} />
                 </Switch>
             </BrowserRouter>
         </div>

@@ -1,0 +1,18 @@
+.realizarCompra .header {
+    margin-bottom: 2vw;
+}
+
+.realizarCompra Form{
+    padding: 20px;
+    border: 3.5px solid rgba(128, 128, 128, 0.4);
+    border-radius: 10px;
+}
+
+.realizarCompra .botones{
+    text-align: center;
+}
+
+.realizarCompra .card {
+    border-radius: 10px;
+    border-width: 2px;
+}
