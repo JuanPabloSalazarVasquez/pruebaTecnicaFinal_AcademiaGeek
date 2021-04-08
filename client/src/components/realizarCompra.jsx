@@ -2,19 +2,22 @@ import React, { useState, useRef, useEffect } from "react";
 import { Container, Form, Button, Row, Col } from "react-bootstrap";
 import swal from "sweetalert2";
 import '../styles/realizarCompra.css';
+require('dotenv').config({ path: '../.env' });
 
 const RealizarCompra = () => {
     //Declaración de variables
-    const [orderData, setOrderData] = useState({ numeroOrden: 2 });
+    const [orderData, setOrderData] = useState({});
     let [fechaHora, setFechaHora] = useState({});
     let [subTotalNumber, setSubTotalNumber] = useState(0);
     let products = []
+    let isLoading = false;
     const formulario = useRef();
     const recibo = useRef();
     //Declaración de variables fin
 
     useEffect(() => {
         getCurrentDateAndHour();
+        isLoading = true;
     }, []);
 
     //Generar fecha y hora actual
@@ -42,6 +45,7 @@ const RealizarCompra = () => {
         }));
     }
 
+    //Actualizar orderData al cambiar campos del formulario
     const handleChange = (e) => {
         let name = e.target.name;
         let value = e.target.value;
@@ -56,6 +60,7 @@ const RealizarCompra = () => {
 
     }
 
+    //Añadir producto a la orden
     const add = () => {
         if (orderData.nombre == "" || orderData.nombre == undefined) {
             swal.fire({
@@ -72,6 +77,7 @@ const RealizarCompra = () => {
         }
     }
 
+    //Resetear el formulario
     const reset = (param) => {
         if (param == "add") {
             formulario.current.reset()
@@ -93,6 +99,7 @@ const RealizarCompra = () => {
         }
     }
 
+    //Borrar un item de la orden
     const deleteItem = () => {
         swal.fire({
             icon: "success",
@@ -102,6 +109,7 @@ const RealizarCompra = () => {
         }); //Quita el elemento en cuestión del array y vuelve tirar el map
     }
 
+    //Montar orden a la base de datos y volver al homePage
     const finishOrder = () => {
         swal.fire({
             icon: "success",
@@ -110,17 +118,16 @@ const RealizarCompra = () => {
             confirmButtonText: "Volver al inicio",
             confirmButtonColor: "green",
         })
-        .then(() => {
-            window.location.href = '/'
-        });
-        
+            .then(() => {
+                window.location.href = '/'
+            });
     }
 
     const tableBody = <tr>
         <td>Tipo de producto</td>
         <td>Cantidad del producto</td>
         <td>Subtotal del producto</td>
-        <td style={{ textAlign: "center" }}><input type="image" src="https://cdn.pixabay.com/photo/2012/04/12/20/12/x-30465_1280.png" width="20" height="20" alt="X" onClick={deleteItem} /> </td>
+        <td style={{ textAlign: "center" }}><input type="image" src="https://github.com/JuanPabloSalazarVasquez/pruebaTecnicaFinal_AcademiaGeek/blob/master/client/public/img/x.png" width="20" height="20" alt="X" onClick={deleteItem} /> </td>
     </tr>; /*
     basketList.map((data) =>
         <tr>
@@ -129,108 +136,110 @@ const RealizarCompra = () => {
         </tr>
     */
 
-    return (
-        <div className="realizarCompra" >
-            <Container className="text-left mt-2 mx-auto my-3 p-2 bosy w-50" >
-                <Form ref={formulario}>
-                    <Form.Group controlId="formBasicEmail">
-                        <Form.Label>Número de la orden</Form.Label>
-                        <Form.Control type="number" readOnly value={orderData.numeroOrden} />
-                    </Form.Group>
+    if (isLoading) { return null } else {
+        return (
+            <div className="realizarCompra" >
+                <Container className="text-left mt-2 mx-auto my-3 p-2 bosy w-50" >
+                    <Form ref={formulario}>
+                        <Form.Group controlId="formBasicEmail">
+                            <Form.Label>Número de la orden</Form.Label>
+                            <Form.Control type="number" readOnly value={orderData.numeroDeOrden} />
+                        </Form.Group>
 
-                    <Form.Group controlId="formBasicPassword">
-                        <Form.Label>Nombre</Form.Label>
-                        <Form.Control type="text" placeholder="Ingrese su nombre" name="nombre" onChange={handleChange} value={orderData.nombre || ''} />
-                    </Form.Group>
+                        <Form.Group controlId="formBasicPassword">
+                            <Form.Label>Nombre</Form.Label>
+                            <Form.Control type="text" placeholder="Ingrese su nombre" name="nombre" onChange={handleChange} value={orderData.nombre || ''} />
+                        </Form.Group>
 
-                    <Row>
-                        <Col>
-                            <Form.Group controlId="formBasicPassword">
-                                <Form.Label>Fecha</Form.Label>
-                                <Form.Control type="date" readOnly value={fechaHora.fechaInput || ''} />
-                            </Form.Group>
-                        </Col>
-                        <Col>
-                            <Form.Group controlId="formBasicPassword">
-                                <Form.Label>Hora</Form.Label>
-                                <Form.Control type="time" readOnly value={fechaHora.hora || ''} />
-                            </Form.Group>
-                        </Col>
-                    </Row>
+                        <Row>
+                            <Col>
+                                <Form.Group controlId="formBasicPassword">
+                                    <Form.Label>Fecha</Form.Label>
+                                    <Form.Control type="date" readOnly value={fechaHora.fechaInput || ''} />
+                                </Form.Group>
+                            </Col>
+                            <Col>
+                                <Form.Group controlId="formBasicPassword">
+                                    <Form.Label>Hora</Form.Label>
+                                    <Form.Control type="time" readOnly value={fechaHora.hora || ''} />
+                                </Form.Group>
+                            </Col>
+                        </Row>
 
-                    <Form.Group controlId="exampleForm.ControlSelect2">
-                        <Form.Label>Artículo</Form.Label>
-                        <Form.Control as="select" name="articulo" onChange={handleChange}>
-                            <option>1</option>
-                            <option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
-                        </Form.Control>
-                    </Form.Group>
+                        <Form.Group controlId="exampleForm.ControlSelect2">
+                            <Form.Label>Artículo</Form.Label>
+                            <Form.Control as="select" name="articulo" onChange={handleChange}>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </Form.Control>
+                        </Form.Group>
 
-                    <Form.Group controlId="formBasicPassword">
-                        <Form.Label>Cantidad</Form.Label>
-                        <Form.Control type="number" placeholder="Unidades del producto" name="unidades" onChange={handleChange} />
-                    </Form.Group>
+                        <Form.Group controlId="formBasicPassword">
+                            <Form.Label>Cantidad</Form.Label>
+                            <Form.Control type="number" placeholder="Unidades del producto" name="unidades" onChange={handleChange} />
+                        </Form.Group>
 
-                    <Form.Group controlId="formBasicPassword">
-                        <Form.Label>Subtotal</Form.Label>
-                        <Form.Control type="number" readOnly />
-                    </Form.Group>
+                        <Form.Group controlId="formBasicPassword">
+                            <Form.Label>Subtotal</Form.Label>
+                            <Form.Control type="number" readOnly />
+                        </Form.Group>
 
-                    <Button variant="primary" onClick={add} className="mx-2 my-1">
-                        Agregar
+                        <Button variant="primary" onClick={add} className="mx-2 my-1">
+                            Agregar
                     </Button>
-                    <Button variant="primary" onClick={reset} className="mx-2 my-1">
-                        Cancelar
+                        <Button variant="primary" onClick={reset} className="mx-2 my-1">
+                            Cancelar
                     </Button>
-                </Form>
+                    </Form>
 
-                <div style={{ display: "none" }} ref={recibo}>
+                    <div style={{ display: "none" }} ref={recibo}>
 
 
-                    <div className="card my-4">
-                        <div className="card-body">
-                            <h5 className="card-title mb-2">Recibo de compra</h5>
-                            <h5 className="card-title mb-2">GEEK Cosmetics</h5>
-                            <hr />
-                            <p className="card-text">Orden número: {orderData.numeroOrden || ''}</p>
-                            <p className="card-text">Cliente: {orderData.nombre || ''}</p>
-                            <p className="card-text">Fecha y hora: {fechaHora.fecha || ''} - {fechaHora.hora || ''}</p>
+                        <div className="card my-4">
+                            <div className="card-body">
+                                <h5 className="card-title mb-2">Recibo de compra</h5>
+                                <h5 className="card-title mb-2">GEEK Cosmetics</h5>
+                                <hr />
+                                <p className="card-text">Orden número: {orderData.numeroDeOrden || ''}</p>
+                                <p className="card-text">Cliente: {orderData.nombre || ''}</p>
+                                <p className="card-text">Fecha y hora: {fechaHora.fecha || ''} - {fechaHora.hora || ''}</p>
 
-                            <table className="table table-bordered table-striped table-sm table-hover .table-responsive">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Producto</th>
-                                        <th scope="col">Cantidad</th>
-                                        <th scope="col">Subtotal</th>
-                                        <th scope="col">Borrar Item</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {tableBody}
+                                <table className="table table-bordered table-striped table-sm table-hover .table-responsive">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Producto</th>
+                                            <th scope="col">Cantidad</th>
+                                            <th scope="col">Subtotal</th>
+                                            <th scope="col">Borrar Item</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {tableBody}
 
-                                    <tr>
-                                        <td>Subtotal: </td>
-                                        <td>Total IVA: </td>
-                                        <td>Total: </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                        <tr>
+                                            <td>Subtotal: </td>
+                                            <td>Total IVA: </td>
+                                            <td>Total: </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div className="card-footer text-left">
+                                <p className="total">Subtotal: {subTotalNumber || ''}</p>
+                                <hr />
+                            </div>
                         </div>
-                        <div className="card-footer text-left">
-                            <p className="total">Subtotal: {subTotalNumber || ''}</p>
-                            <hr />
-                        </div>
+                        <Button variant="primary" onClick={finishOrder} className="mx-2 my-1">
+                            Finalizar
+                    </Button>
                     </div>
-                    <Button variant="primary" onClick={finishOrder} className="mx-2 my-1">
-                        Finalizar
-                    </Button>
-                </div>
-            </Container>
-        </div>
-    );
+                </Container>
+            </div>
+        );
+    }
 }
 
 export default RealizarCompra;
