@@ -1,11 +1,11 @@
 //Función para guardar datos en el functions
-export const saveToLocal = (key, value) => window.functions.setItem(key, value);
+export const saveToLocal = (key, value) => localStorage.setItem(key, value);
 //Función para tomar datos guardados en el local storage  
-export const getFromLocal = (key) => window.functions.getItem(key);
+export const getFromLocal = (key) => localStorage.getItem(key);
 //Función para borrar datos del functions  
-export const removeFromLocal = (key) => window.functions.removeItem(key);
+export const removeFromLocal = (key) => localStorage.removeItem(key);
 //Función para borrar todos los datos del functions 
-export const remove = () => window.functions.clear();
+export const remove = () => localStorage.clear();
 //Función para generar la fecha actual
 export const generateDate = () => {
     let d = new Date();

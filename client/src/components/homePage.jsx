@@ -1,9 +1,13 @@
-import React from "react";
-
+import React, { useEffect } from "react";
+import { remove } from "../functions/functions";
 import { Container } from "react-bootstrap";
 import '../styles/homePage.css';
 
 const HomePage = () => {
+
+    useEffect(() => {
+        remove();
+    }, []);
 
     return (
         <div className="homePage" >

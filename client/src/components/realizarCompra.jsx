@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Container, Form, Button, Row, Col } from "react-bootstrap";
+import { saveToLocal, remove, getFromLocal } from "../functions/functions";
 import api from '../axios/axios';
 import swal from "sweetalert2";
 import '../styles/realizarCompra.css';
@@ -8,19 +9,19 @@ require('dotenv').config({ path: '../.env' });
 const RealizarCompra = () => {
     //Declaración de variables
     const [orderData, setOrderData] = useState({});
-    const [articuloActual, setArticuloActual] = useState({});
     let [fechaHora, setFechaHora] = useState({});
     let [articles, setArticles] = useState([]);
+    const [tableBody, setTableBody] = useState([]);
     const formulario = useRef();
     const recibo = useRef();
     const btnAñadir = useRef();
-    let tableBody = '';
     //Declaración de variables fin
 
     useEffect(() => {
         getCurrentDateAndHour();
         getOrderNumber();
         getArticlesInfo();
+        //remove();
     }, []);
 
     //Generar fecha y hora actual
@@ -82,7 +83,6 @@ const RealizarCompra = () => {
         api.get('/getAllArticles')
             .then((res) => {
                 setArticles(res.data);
-                console.log(res.data);
             }).catch((err) => {
                 swal.fire({
                     icon: "error",
@@ -105,24 +105,11 @@ const RealizarCompra = () => {
                 ...orderData,
                 articulo: value,
             }));
-
-            for (let i = 0; i < articles.length; i++) {
-                if (value == articles[i].id_articulo) {
-                    setArticuloActual((state) => ({
-                        ...articuloActual,
-                        id_articulo: value,
-                        descripcion: articles[i].descripcion,
-                        existencias: articles[i].existencias,
-                        precio: articles[i].precio
-                    }));
-                }
-            }
         } else {
             setOrderData((state) => ({
                 ...orderData,
                 [name]: value,
             }));
-            console.log(name + ":" + value)
         }
 
         if (orderData.articulo && name == 'unidades') {
@@ -150,7 +137,8 @@ const RealizarCompra = () => {
                         setOrderData((state) => ({
                             ...orderData,
                             subTotalNumber: precio * value,
-                            unidades: value
+                            unidades: value,
+                            descripcion: articles[i].descripcion
                         }));
                         break;
                     }
@@ -177,17 +165,17 @@ const RealizarCompra = () => {
                     setOrderData((state) => ({
                         ...orderData,
                         subTotalNumber: precio * orderData.unidades,
-                        articulo: value
+                        articulo: value,
+                        descripcion: articles[i].descripcion
                     }));
                     break;
                 }
-
             }
         }
     }
 
     //Añadir producto a la orden
-    const add = () => {
+    const addItem = () => {
         if (!orderData.nombre) {
             swal.fire({
                 icon: "error",
@@ -212,26 +200,34 @@ const RealizarCompra = () => {
                 confirmButtonText: "Entendido",
                 confirmButtonColor: "red",
             });
-            console.log(orderData)
         } else {
-            getCurrentDateAndHour();
-            reset("add")
-            tableBody = tablebody + `
-                <tr>
-                    <td>${orderData.articulo}</td>
-                    <td>${orderData.unidades || ''}</td>
-                    <td>${orderData.subTotalNumber || ''}</td>
-                    <td style={{ textAlign: "center" }}><input type="image" src="https://github.com/JuanPabloSalazarVasquez/pruebaTecnicaFinal_AcademiaGeek/blob/master/client/public/img/x.png" width="20" height="20" alt="X" onClick={deleteItem} /> </td>
-                </tr>
-                `
+            
+            let listaArticulosTemp = getFromLocal('listaArticulos');
+            console.log(listaArticulosTemp);
+            if (listaArticulosTemp) {
+                let listaArticulos = listaArticulosTemp.split(',');
+                const found = listaArticulos.find(element => element == orderData.descripcion);
+                console.log("Encontró: " + found);
 
-            recibo.current.style = { display: "block" }
+                if (!found) {
+                    let strLista = listaArticulos + "," + orderData.descripcion
+                    saveToLocal('listaArticulos', strLista)
+                    saveToLocal('objArticulos', JSON.stringify(orderData))
+                }
+            } else {
+                saveToLocal('listaArticulos', orderData.descripcion)
+                saveToLocal('objArticulos', JSON.stringify(orderData))
+            }
+
+            getCurrentDateAndHour();
+            reset("addItem");
+            recibo.current.style = { display: "block" };
         }
     }
 
     //Resetear el formulario
     const reset = (param) => {
-        if (param == "add") {
+        if (param == "addItem") {
             formulario.current.reset()
         } else {
             swal.fire({
@@ -253,12 +249,13 @@ const RealizarCompra = () => {
 
     //Borrar un item de la orden
     const deleteItem = () => {
-        swal.fire({
+        alert('¡Funciona!')
+        /*swal.fire({
             icon: "success",
             title: "Producto eliminado",
             confirmButtonText: "Entendido",
             confirmButtonColor: "green",
-        }); //Quita el elemento en cuestión del array y vuelve tirar el map
+        });*/ //Quita el elemento en cuestión del array y vuelve tirar el map
     }
 
     //Montar orden a la base de datos y volver al homePage
@@ -324,7 +321,7 @@ const RealizarCompra = () => {
                         <Form.Control type="number" readOnly value={orderData.subTotalNumber || ''} />
                     </Form.Group>
 
-                    <Button variant="primary" onClick={add} className="mx-2 my-1" ref={btnAñadir}>
+                    <Button variant="primary" onClick={addItem} className="mx-2 my-1" ref={btnAñadir}>
                         Agregar
                     </Button>
                     <Button variant="primary" onClick={reset} className="mx-2 my-1">
@@ -354,17 +351,28 @@ const RealizarCompra = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {tableBody}
-                                    <tr>
-                                        <td>Subtotal: </td>
-                                        <td>Total IVA: </td>
-                                        <td>Total: </td>
-                                    </tr>
+                                    {tableBody.map((data) =>
+                                        <tr style={{ textAlign: "center", alignItems: "center" }}>
+                                            <td>{data.orderData.descripcion}</td>
+                                            <td>{data.orderData.unidades}</td>
+                                            <td>{data.orderData.subTotalNumber}</td>
+                                            <input type="image" src="https://github.com/JuanPabloSalazarVasquez/pruebaTecnicaFinal_AcademiaGeek/blob/master/client/public/img/x.png?raw=true" alt="X" className="x" onClick={deleteItem} />
+                                        </tr>
+                                    )}
                                 </tbody>
                             </table>
                         </div>
                         <div className="card-footer text-left">
-                            <p className="total">Subtotal: {orderData.subTotalNumber || ''}</p>
+
+                            <tr>
+                                <p className="total">Subtotal: {orderData.subTotalNumber || ''}</p>
+                            </tr>
+                            <tr>
+                                <p className="total">Total IVA: {orderData.subTotalNumber * 0.2 || ''}</p>
+                            </tr>
+                            <tr>
+                                <p className="total">Total: {(orderData.subTotalNumber * 0.2) + orderData.subTotalNumber || ''}</p>
+                            </tr>
                             <hr />
                         </div>
                     </div>
