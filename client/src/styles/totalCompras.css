@@ -20,5 +20,5 @@
 }
 
 .card:hover{
-    box-shadow: 0 10px 20px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06);
+    box-shadow: 0 10px 20px #0275d8, 0 4px 8px #0274d87e;
 }
