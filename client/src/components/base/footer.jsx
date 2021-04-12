@@ -10,7 +10,7 @@ const Footer = () => {
             <p>
                 Todos los derechos reservados ©GEEK Cosmetics
                 <br />
-                V 1.0.0
+                V 0.3.1
             </p>
         </div>
     )

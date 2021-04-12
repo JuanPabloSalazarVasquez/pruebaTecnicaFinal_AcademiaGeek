@@ -11,17 +11,20 @@ const RealizarCompra = () => {
     const [orderData, setOrderData] = useState({});
     let [fechaHora, setFechaHora] = useState({});
     let [articles, setArticles] = useState([]);
-    const [tableBody, setTableBody] = useState([]);
+    const [myProds, setMyProds] = useState([]);
     const formulario = useRef();
     const recibo = useRef();
     const btnAñadir = useRef();
+    const keyProds = 'productos';
+    const keyUnids = 'unidades';
+    let arrMyProds = []
     //Declaración de variables fin
 
     useEffect(() => {
         getCurrentDateAndHour();
         getOrderNumber();
         getArticlesInfo();
-        //remove();
+        remove();
     }, []);
 
     //Generar fecha y hora actual
@@ -201,29 +204,48 @@ const RealizarCompra = () => {
                 confirmButtonColor: "red",
             });
         } else {
-            
-            let listaArticulosTemp = getFromLocal('listaArticulos');
-            console.log(listaArticulosTemp);
-            if (listaArticulosTemp) {
-                let listaArticulos = listaArticulosTemp.split(',');
-                const found = listaArticulos.find(element => element == orderData.descripcion);
-                console.log("Encontró: " + found);
+            //Obtengo ListString con productos en carrito
+            let strProdsTemp = getFromLocal(keyProds);
+            strProdsTemp = JSON.parse(strProdsTemp);
 
-                if (!found) {
-                    let strLista = listaArticulos + "," + orderData.descripcion
-                    saveToLocal('listaArticulos', strLista)
-                    saveToLocal('objArticulos', JSON.stringify(orderData))
-                }
-            } else {
-                saveToLocal('listaArticulos', orderData.descripcion)
-                saveToLocal('objArticulos', JSON.stringify(orderData))
+
+
+            //Cargo lista de productos
+            if (strProdsTemp != "" && strProdsTemp != null && strProdsTemp != undefined) {
+                //Valido si ya existe el producto ingresado
+                myProds.forEach((item, index) => {
+                    if (item.articulo == orderData.articulo) {
+                        console.log('item 2: ')
+                        console.log(index)
+                        let units = orderData.unidades + item.unidades
+                        myProds[index].unidades += orderData.unidades;
+
+                        reset("addItem");
+
+                        throw ('Producto ya existe!!');
+                    }
+                })
+
             }
+
+            //Agrego el producto a la lista
+            arrMyProds.push(orderData);
+
+            //Llevo la lista al localStorage
+            saveToLocal(keyProds, arrMyProds.map((p) => JSON.stringify(p)));
+
+
+            myProds.push(arrMyProds[0])
+            console.log('MyProds: ')
+            console.log(myProds)
 
             getCurrentDateAndHour();
             reset("addItem");
             recibo.current.style = { display: "block" };
+            return true;
         }
     }
+
 
     //Resetear el formulario
     const reset = (param) => {
@@ -351,12 +373,13 @@ const RealizarCompra = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {tableBody.map((data) =>
+                                    {myProds.map((data) =>
                                         <tr style={{ textAlign: "center", alignItems: "center" }}>
-                                            <td>{data.orderData.descripcion}</td>
-                                            <td>{data.orderData.unidades}</td>
-                                            <td>{data.orderData.subTotalNumber}</td>
-                                            <input type="image" src="https://github.com/JuanPabloSalazarVasquez/pruebaTecnicaFinal_AcademiaGeek/blob/master/client/public/img/x.png?raw=true" alt="X" className="x" onClick={deleteItem} />
+                                            <td>{data.descripcion}</td>
+                                            <td>{data.unidades}</td>
+                                            <td>{data.subTotalNumber}</td>
+                                            <td><input type="image" src="https://github.com/JuanPabloSalazarVasquez/pruebaTecnicaFinal_AcademiaGeek/blob/master/client/public/img/x.png?raw=true" alt="X" className="x" onClick={deleteItem} /></td>
+
                                         </tr>
                                     )}
                                 </tbody>
